@@ -37,7 +37,6 @@ public class Customer {
 	private String encryptedPassword;
 	
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-	@JoinColumn(name = "address_id")
 	private List<Address> addresses;
 	
 	public void addAddress(Address address) {
