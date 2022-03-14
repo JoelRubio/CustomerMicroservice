@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  mysqldb:
+    image: mysql:8.0.28-oracle
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_PASSWORD=$MYSQL_PASSWORD
+    ports:
+      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+  spring-app:
+    image: ecommerce:latest
+    build: .
+    restart: on-failure
+    depends_on:
+      - mysqldb
+        #condition: service_completed_successfully
+    environment:
+      - DATASOURCE_MYSQL_DRIVER =com.mysql.cj.jdbc.Driver
+      - DATASOURCE_MYSQL_URL=jdbc:mysql://mysqldb:$MYSQL_DOCKER_PORT/$MYSQL_DATABASE?autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+      - DATASOURCE_MYSQL_USERNAME=$MYSQL_USER
+      - DATASOURCE_MYSQL_PASSWORD=$MYSQL_PASSWORD
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT

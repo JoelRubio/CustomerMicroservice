@@ -1,0 +1,14 @@
+
+spring:
+  datasource:
+    driver-class-name: ${DATASOURCE_MYSQL_DRIVER}
+    url: ${DATASOURCE_MYSQL_URL}
+    username: ${DATASOURCE_MYSQL_USERNAME}
+    password: ${DATASOURCE_MYSQL_PASSWORD}
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
