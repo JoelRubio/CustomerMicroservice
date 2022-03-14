@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.joel.ecommerce.domain.Address;
 import com.joel.ecommerce.domain.Customer;
+import com.joel.ecommerce.exception.EntityNotFoundException;
 import com.joel.ecommerce.model.RequestAddressModel;
 import com.joel.ecommerce.model.ResponseAddressModel;
 import com.joel.ecommerce.repository.AddressRepository;
@@ -40,7 +41,7 @@ public class AddressServiceImpl implements AddressService {
 		
 		Customer customer = customerRepository
 				.findByUuid(customerUuid)
-				.orElseThrow();
+				.orElseThrow(EntityNotFoundException::new);
 		
 		List<ResponseAddressModel> addresses = addressRepository
 				.findAllByCustomerId(customer.getId())
@@ -60,7 +61,7 @@ public class AddressServiceImpl implements AddressService {
 		
 		Address addressSaved = addressRepository
 				.findByUuid(uuid)
-				.orElseThrow();
+				.orElseThrow(EntityNotFoundException::new);
 		
 		ResponseAddressModel addressResponse = modelMapper.map(addressSaved, ResponseAddressModel.class);
 		
@@ -76,7 +77,7 @@ public class AddressServiceImpl implements AddressService {
 
 		Customer customer = customerRepository
 				.findByUuid(customerUuid)
-				.orElseThrow();
+				.orElseThrow(EntityNotFoundException::new);
 		
 		Address addressToSave = modelMapper.map(addressRequest, Address.class);
 		
@@ -105,7 +106,7 @@ public class AddressServiceImpl implements AddressService {
 		
 		Address addressToDelete = addressRepository
 				.findByUuid(uuid)
-				.orElseThrow();
+				.orElseThrow(EntityNotFoundException::new);
 		
 		addressRepository.delete(addressToDelete);
 		

@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.joel.ecommerce.domain.Customer;
+import com.joel.ecommerce.exception.EntityNotFoundException;
 import com.joel.ecommerce.model.RequestCustomerModel;
 import com.joel.ecommerce.model.ResponseCustomerModel;
 import com.joel.ecommerce.repository.CustomerRepository;
@@ -52,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		Customer customerSaved = repository
 				.findByUuid(uuid)
-				.orElseThrow();
+				.orElseThrow(EntityNotFoundException::new);
 		
 		ResponseCustomerModel customerResponse =  modelMapper.map(customerSaved, ResponseCustomerModel.class);
 		
@@ -94,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		Customer customerToDelete = repository
 				.findByUuid(uuid)
-				.orElseThrow();
+				.orElseThrow(EntityNotFoundException::new);
 		
 		repository.delete(customerToDelete);
 		
