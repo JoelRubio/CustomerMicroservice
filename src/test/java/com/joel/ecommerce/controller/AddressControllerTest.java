@@ -91,7 +91,6 @@ public class AddressControllerTest {
 		expectedResponse.setState(state);
 		expectedResponse.setCity(city);
 		
-		
 		//when
 		when(addressService.add(customerUuid, addressRequest)).thenReturn(expectedResponse);
 		

@@ -1,5 +1,7 @@
 
 spring:
+  application:
+    name: customer-service
   datasource:
     driver-class-name: ${DATASOURCE_MYSQL_DRIVER}
     url: ${DATASOURCE_MYSQL_URL}

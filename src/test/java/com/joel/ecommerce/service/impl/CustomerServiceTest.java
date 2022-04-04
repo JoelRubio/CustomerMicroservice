@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import com.joel.ecommerce.domain.Customer;
+import com.joel.ecommerce.exception.EntityNotFoundException;
 import com.joel.ecommerce.model.RequestCustomerModel;
 import com.joel.ecommerce.model.ResponseCustomerModel;
 import com.joel.ecommerce.repository.CustomerRepository;
@@ -52,9 +53,12 @@ public class CustomerServiceTest {
 		when(customerRepository.findByUuid(uuid)).thenReturn(customerSaved);
 		when(modelMapper.map(customerSaved.get(), ResponseCustomerModel.class)).thenReturn(expectedResponse);
 		
+		//execute
 		actualResponse = customerService.getById(uuid);
 		
 		//then
+		verify(modelMapper, times(1)).map(customerSaved.get(), ResponseCustomerModel.class);
+		
 		assertThat(actualResponse).isEqualTo(expectedResponse);
 	}
 	
@@ -77,10 +81,14 @@ public class CustomerServiceTest {
 		when(customerRepository.save(customerToSave)).thenReturn(customerSaved);
 		when(modelMapper.map(customerSaved, ResponseCustomerModel.class)).thenReturn(expectedResponse);
 		
+		//execute
 		actualResponse = customerService.add(customerRequest);
 		
 		//then
-		assertThat(expectedResponse).isEqualTo(actualResponse);
+		verify(modelMapper, times(1)).map(customerRequest, Customer.class);
+		verify(modelMapper, times(1)).map(customerSaved, ResponseCustomerModel.class);
+		
+		assertThat(actualResponse).isEqualTo(expectedResponse);
 	}
 	
 	@Test
@@ -94,6 +102,7 @@ public class CustomerServiceTest {
 		when(customerRepository.findByUuid(uuid)).thenReturn(customerSaved);
 		doNothing().when(customerRepository).delete(customerSaved.get());
 		
+		//execute
 		customerService.delete(uuid);
 		
 		//then
@@ -108,9 +117,9 @@ public class CustomerServiceTest {
 		String emptyUuid = "";
 		
 		//when
-		when(customerRepository.findByUuid(emptyUuid)).thenThrow(RuntimeException.class);
+		when(customerRepository.findByUuid(emptyUuid)).thenThrow(EntityNotFoundException.class);
 		
 		//then
-		assertThrows(RuntimeException.class, () -> customerService.getById(emptyUuid));
+		assertThrows(EntityNotFoundException.class, () -> customerService.getById(emptyUuid));
 	}
 }

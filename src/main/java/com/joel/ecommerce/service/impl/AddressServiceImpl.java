@@ -1,7 +1,6 @@
 package com.joel.ecommerce.service.impl;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,13 +42,13 @@ public class AddressServiceImpl implements AddressService {
 				.findByUuid(customerUuid)
 				.orElseThrow(EntityNotFoundException::new);
 		
-		List<ResponseAddressModel> addresses = addressRepository
+		Collection<ResponseAddressModel> addresses = addressRepository
 				.findAllByCustomerId(customer.getId())
 				.stream()
 				.map(address -> modelMapper.map(address, ResponseAddressModel.class))
 				.collect(Collectors.toList());
 		
-		log.info("{} total addresses obtained", addresses.size());
+		log.info("Total addresses obtained: {}", addresses.size());
 		
 		return addresses;
 	}

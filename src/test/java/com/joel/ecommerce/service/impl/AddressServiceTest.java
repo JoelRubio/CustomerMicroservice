@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 
 import com.joel.ecommerce.domain.Address;
 import com.joel.ecommerce.domain.Customer;
+import com.joel.ecommerce.exception.EntityNotFoundException;
 import com.joel.ecommerce.model.RequestAddressModel;
 import com.joel.ecommerce.model.ResponseAddressModel;
 import com.joel.ecommerce.repository.AddressRepository;
@@ -58,10 +59,13 @@ public class AddressServiceTest {
 		when(addressRepository.findByUuid(customerUuid)).thenReturn(address);
 		when(modelMapper.map(address.get(), ResponseAddressModel.class)).thenReturn(expectedResponse);
 		
+		//execute
 		actualResponse = addressService.getById(customerUuid);
 		
 		//then
-		assertThat(expectedResponse).isEqualTo(actualResponse);
+		verify(modelMapper, times(1)).map(address.get(), ResponseAddressModel.class);
+		
+		assertThat(actualResponse).isEqualTo(expectedResponse);
 	}
 	
 	@Test
@@ -86,10 +90,15 @@ public class AddressServiceTest {
 		when(addressRepository.save(address)).thenReturn(address);
 		when(modelMapper.map(address, ResponseAddressModel.class)).thenReturn(expectedResponse);
 		
+		//execute
 		actualResponse = addressService.add(customerUuid, addressRequest);
 		
 		//then
-		assertThat(expectedResponse).isEqualTo(actualResponse);
+		verify(customerRepository, times(1)).findByUuid(customerUuid);
+		verify(modelMapper, times(1)).map(addressRequest, Address.class);
+		verify(modelMapper, times(1)).map(address, ResponseAddressModel.class);
+		
+		assertThat(actualResponse).isEqualTo(expectedResponse);
 	}
 	
 	@Test
@@ -103,6 +112,7 @@ public class AddressServiceTest {
 		when(addressRepository.findByUuid(uuid)).thenReturn(address);
 		doNothing().when(addressRepository).delete(address.get());
 		
+		//execute
 		addressService.delete(uuid);
 		
 		//then
@@ -131,9 +141,9 @@ public class AddressServiceTest {
 		String emptyAddressUuid = "";
 		
 		//when
-		when(addressRepository.findByUuid(emptyAddressUuid)).thenThrow(RuntimeException.class);
+		when(addressRepository.findByUuid(emptyAddressUuid)).thenThrow(EntityNotFoundException.class);
 		
 		//then
-		assertThrows(RuntimeException.class, () -> addressService.getById(emptyAddressUuid));
+		assertThrows(EntityNotFoundException.class, () -> addressService.getById(emptyAddressUuid));
 	}
 }

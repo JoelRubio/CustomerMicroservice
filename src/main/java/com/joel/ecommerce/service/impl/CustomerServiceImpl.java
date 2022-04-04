@@ -1,7 +1,6 @@
 package com.joel.ecommerce.service.impl;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,13 +34,13 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		log.info("Getting all customers...");
 		
-		List<ResponseCustomerModel> customers = repository
+		Collection<ResponseCustomerModel> customers = repository
 				.findAll()
 				.stream()
 				.map(customer -> modelMapper.map(customer, ResponseCustomerModel.class))
 				.collect(Collectors.toList());
 		
-		log.info("Customers obtained");
+		log.info("Total customers obtained: {}", customers.size());
 		
 		return customers;
 	}
